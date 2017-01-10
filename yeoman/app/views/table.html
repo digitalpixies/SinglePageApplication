@@ -1,0 +1,32 @@
+<p>
+  Demonstration of json data rendered as a table with pagination. Country list sourced from https://gist.github.com/keeguon/2310008
+</p>
+<table>
+  <thead>
+    <tr>
+      <th ng-repeat="key in header">{{key}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="country in countries | limitTo: control.pageSize*control.currentPage | limitTo: -control.pageSize">
+      <td ng-repeat="(key, value) in country">{{value}}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="{{header.length}}">
+        <ul uib-pagination
+          boundary-links="true"
+          total-items="countries.length"
+          ng-model="control.currentPage"
+          items-per-page="control.pageSize"
+          class="pagination-sm"
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          first-text="&laquo;"
+          last-text="&raquo;">
+        </ul>
+      </td>
+    </tr>
+  </tfoot>
+</table>
