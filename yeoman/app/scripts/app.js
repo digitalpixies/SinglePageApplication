@@ -26,6 +26,11 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
+      .when('/Emoji', {
+        templateUrl: 'views/emoji.html',
+        controller: 'EmojiCtrl',
+        controllerAs: 'Emoji'
+      })
       .otherwise({
         redirectTo: '/'
       });
