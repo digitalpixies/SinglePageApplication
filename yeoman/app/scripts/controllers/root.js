@@ -12,5 +12,5 @@ angular.module('yeomanApp')
     $scope.control = {};
     $scope.control.menu = [];
     $scope.control.menu.push({label:'Home',url:'/',link:'#/'});
-    $scope.path = $location.path();
+    $scope.$location = $location;
   });
