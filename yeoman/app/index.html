@@ -40,7 +40,7 @@
           <div class="collapse navbar-collapse" id="js-navbar-collapse">
 
             <ul class="nav navbar-nav">
-              <li ng-class="{'active':menuItem.url==path}" ng-repeat="menuItem in control.menu"><a href="{{menuItem.link}}">{{menuItem.label}}</a></li>
+              <li ng-class="{'active':menuItem.url==$location.path()}" ng-repeat="menuItem in control.menu"><a href="{{menuItem.link}}">{{menuItem.label}}</a></li>
             </ul>
           </div>
         </div>
