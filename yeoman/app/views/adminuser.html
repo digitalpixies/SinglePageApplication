@@ -1,0 +1,42 @@
+<p>
+  Demonstration of a CRUD interface
+</p>
+
+<div class="crud-list">
+<table>
+  <thead>
+    <tr>
+      <th colspan="{{header.length}}">
+        Add
+      </th>
+    </tr>
+    <tr>
+      <th ng-repeat="key in header">{{key}}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr ng-repeat="user in users| limitTo: control.pageSize*control.currentPage | limitTo: -control.pageSize">
+      <td ng-repeat="(key, value) in user">{{value}}</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="{{header.length}}">
+        <ul uib-pagination
+          boundary-links="true"
+          total-items="users.length"
+          ng-model="control.currentPage"
+          items-per-page="control.pageSize"
+          class="pagination-sm"
+          previous-text="&lsaquo;"
+          next-text="&rsaquo;"
+          first-text="&laquo;"
+          last-text="&raquo;">
+        </ul>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+<div class="crud-add crud-edit nghide">
+</div>
