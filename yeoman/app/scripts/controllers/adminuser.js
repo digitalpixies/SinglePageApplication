@@ -14,4 +14,14 @@ angular.module('yeomanApp')
     $scope.control={};
     $scope.control.pageSize = 20;
     $scope.control.currentPage = 1;
+    $scope.control.show="list";
+    $scope.ShowAdd = function() {
+      $scope.control.show="add";
+    };
+    $scope.Cancel = function() {
+      $scope.control.show="list";
+    };
+    $scope.Add = function() {
+      $scope.control.show="list";
+    }
   });
