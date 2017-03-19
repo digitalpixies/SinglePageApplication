@@ -3,13 +3,8 @@
 </p>
 
 <div class="crud-list" ng-show="control.show=='list'">
-  <table>
+  <table class="table">
     <thead>
-      <tr>
-        <th colspan="{{header.length}}">
-          <a class="btn btn-primary" role="button" ng-click="ShowAdd()">Add</a>
-        </th>
-      </tr>
       <tr>
         <th ng-repeat="key in header">{{key}}</th>
       </tr>
@@ -17,20 +12,30 @@
     <tbody>
       <tr ng-repeat="user in users| limitTo: control.pageSize*control.currentPage | limitTo: -control.pageSize">
         <td ng-repeat="(key, value) in user">{{value}}</td>
+        <td class="text-right">
+          <a class="btn btn-primary" role="button" ng-click="ShowEdit(user)">Edit</a>
+          <a class="btn btn-primary" role="button" ng-click="Delete()">Delete</a>
+        </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="{{header.length}}">
+        <th colspan="{{header.length+2}}" class="text-right">
+          <a class="btn btn-primary" role="button" ng-click="ShowAdd()">Add</a>
+        </th>
+      </tr>
+      <tr>
+        <td colspan="{{header.length+2}}">
           <ul uib-pagination boundary-links="true" total-items="users.length" ng-model="control.currentPage" items-per-page="control.pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
           </ul>
         </td>
       </tr>
     </tfoot>
   </table>
+  <pre>{{users}}</pre>
 </div>
 
-<div class="crud-add crud-edit nghide" ng-show="control.show=='add'">
+<div class="crud-add crud-edit nghide" ng-show="['add','edit'].indexOf(control.show)!=-1">
   <form class="form-horizontal">
     <div class="form-group">
       <label for="inputEmail" class="col-sm-2 control-label">Email</label>
@@ -45,8 +50,26 @@
       </div>
     </div>
     <div class="form-group">
+      <label for="inputFirstName" class="col-sm-2 control-label">First Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputFirstName" ng-model="entry.firstname">
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="inputLastName" class="col-sm-2 control-label">Last Name</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="inputLastName" ng-model="entry.lastname">
+      </div>
+    </div>
+    <div class="form-group nghide" ng-show="control.show=='add'">
       <div class="col-sm-offset-2 col-sm-10">
-        <button type="submit" class="btn btn-primary" ng-click="Add()">Add</button>
+        <a class="btn btn-primary" role="button" ng-click="Add()">Add</a>
+        <a class="btn btn-default" role="button" ng-click="Cancel()">Cancel</a>
+      </div>
+    </div>
+    <div class="form-group nghide" ng-show="control.show=='edit'">
+      <div class="col-sm-offset-2 col-sm-10">
+        <a class="btn btn-primary" role="button" ng-click="Edit()">Edit</a>
         <a class="btn btn-default" role="button" ng-click="Cancel()">Cancel</a>
       </div>
     </div>
