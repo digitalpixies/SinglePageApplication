@@ -1,0 +1,4 @@
+**/node_modules
+express/public/
+**/**.sqlite
+yeoman/app/scripts/appconfig.js

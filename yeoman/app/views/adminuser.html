@@ -10,11 +10,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="user in users| limitTo: control.pageSize*control.currentPage | limitTo: -control.pageSize">
-        <td ng-repeat="(key, value) in user">{{value}}</td>
+      <tr ng-repeat="user in users">
+        <td ng-repeat="key in header">{{user[key]}}</td>
         <td class="text-right">
           <a class="btn btn-primary" role="button" ng-click="ShowEdit(user)">Edit</a>
-          <a class="btn btn-primary" role="button" ng-click="Delete()">Delete</a>
+          <a class="btn btn-primary" role="button" ng-click="Delete(user)">Delete</a>
         </td>
       </tr>
     </tbody>
@@ -25,9 +25,9 @@
         </th>
       </tr>
       <tr>
-        <td colspan="{{header.length+2}}">
-          <ul uib-pagination boundary-links="true" total-items="users.length" ng-model="control.currentPage" items-per-page="control.pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
-          </ul>
+        <td colspan="{{header.length+2}}" class="text-center">
+            <ul ng-hide="control.pagination.count<=control.pagination.pageSize" uib-pagination boundary-links="true" ng-change="ShowList()" total-items="control.pagination.count" ng-model="control.pagination.currentPage" items-per-page="control.pagination.pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+            </ul>
         </td>
       </tr>
     </tfoot>
@@ -68,7 +68,7 @@
     </div>
     <div class="form-group nghide" ng-show="control.show=='edit'">
       <div class="col-sm-offset-2 col-sm-10">
-        <a class="btn btn-primary" role="button" ng-click="Edit()">Edit</a>
+        <a class="btn btn-primary" role="button" ng-click="Save()">Save</a>
         <a class="btn btn-default" role="button" ng-click="Cancel()">Cancel</a>
       </div>
     </div>
