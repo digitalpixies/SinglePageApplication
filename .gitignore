@@ -2,3 +2,4 @@
 express/public/
 **/**.sqlite
 yeoman/app/scripts/appconfig.js
+public_html

@@ -116,5 +116,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('serve-from-yeoman', ['ngconstant:from-yeoman', 'concurrent:serve']);
 
-    grunt.registerTask('build' ['ngconstant:production', 'build-yeoman', 'copy:YeomanToProd']);
+    grunt.registerTask('build', ['ngconstant:production', 'build-yeoman', 'copy:YeomanToProd']);
 };

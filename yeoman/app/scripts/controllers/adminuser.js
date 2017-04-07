@@ -11,7 +11,7 @@ angular.module('yeomanApp')
   .controller('AdminuserCtrl', function ($scope, UsersAPI) {
     $scope.users = [];
     $scope.header = [];
-    $scope.control={};
+    $scope.control = {};
     var _entry = null;
     $scope.control.pagination = {
       pageSize:5,
