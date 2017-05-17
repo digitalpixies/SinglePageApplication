@@ -12,11 +12,11 @@
     "express": "~4.13.4",
     "jade": "~1.11.0",
     "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0"
-  },
-  "devDependencies": {
+    "serve-favicon": "~2.3.0",
     "clone": "^2.1.1",
     "cors": "^2.8.1",
     "sqlite3": "^3.1.8"
+  },
+  "devDependencies": {
   }
 }

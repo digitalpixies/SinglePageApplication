@@ -19,8 +19,8 @@ router.get('/', function(req, res, next) {
     var pageSize = 5;
     var offset = 0;
     try {
-      pageSize=req.param('pageSize');
-      offset=req.param('offset');
+      pageSize=req.query.pageSize;
+      offset=req.query.offset;
     }
     catch(e) {}
     db.serialize(function() {
