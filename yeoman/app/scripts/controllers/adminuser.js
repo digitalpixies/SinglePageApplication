@@ -18,7 +18,20 @@ angular.module('yeomanApp')
       currentPage:1,
       count:0
     };
+    $scope.control.sort = {
+      column:null,
+      ascending:true
+    };
     $scope.control.show="list";
+    $scope.SortBy = function(column) {
+      if($scope.control.sort.column==column)
+        $scope.control.sort.ascending=!$scope.control.sort.ascending;
+      else {
+        $scope.control.sort.ascending=true;
+        $scope.control.sort.column=column;
+      }
+      $scope.ShowList();
+    };
     $scope.ShowAdd = function() {
       $scope.entry = angular.copy({
         email:''
@@ -44,7 +57,13 @@ angular.module('yeomanApp')
       return data;
     };
     $scope.ShowList = function() {
-      $scope.users = UsersAPI.query({pageSize:$scope.control.pagination.pageSize, offset:($scope.control.pagination.currentPage-1)*$scope.control.pagination.pageSize}, ShowListCB);
+      var params = {
+        pageSize:$scope.control.pagination.pageSize,
+        offset:($scope.control.pagination.currentPage-1)*$scope.control.pagination.pageSize,
+        sortBy:$scope.control.sort.column,
+        ascending:$scope.control.sort.ascending
+      };
+      $scope.users = UsersAPI.query(params, ShowListCB);
       $scope.control.show="list";
     };
     $scope.Save = function() {

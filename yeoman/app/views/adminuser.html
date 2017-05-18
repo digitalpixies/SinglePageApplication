@@ -13,7 +13,11 @@
   <table class="table">
     <thead>
       <tr>
-        <th ng-repeat="key in header">{{key}}</th>
+        <th ng-repeat="key in header" ng-click="SortBy(key)">
+          {{key}}
+          <span class="glyphicon glyphicon-triangle-top" aria-hidden="true" ng-show="control.sort.column==key && control.sort.ascending"></span>
+          <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true" ng-show="control.sort.column==key && !control.sort.ascending"></span>
+        </th>
         <th></th>
       </tr>
     </thead>

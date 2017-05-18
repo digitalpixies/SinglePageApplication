@@ -18,16 +18,15 @@ router.get('/', function(req, res, next) {
     var count = 0;
     var pageSize = 5;
     var offset = 0;
+    var sortBy = typeof(req.query.sortBy)=="undefined"?"id":req.query.sortBy;
+    var ascending = typeof(req.query.ascending)==="undefined"?true:req.query.ascending=="true";
+    var direction = ascending?"ASC":"DESC";
     try {
       pageSize=req.query.pageSize;
       offset=req.query.offset;
     }
     catch(e) {}
     db.serialize(function() {
-      var sql=`
-CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, data TEXT)
-`;
-      db.run(sql);
       sql=`
 SELECT
   COUNT(1) AS count
@@ -41,9 +40,13 @@ SELECT
 SELECT
   *
   FROM users
-  LIMIT ? OFFSET ?
+  ORDER BY ${sortBy} ${direction}
+  LIMIT $pageSize OFFSET $offset
 `;
-      db.each(sql, [pageSize, offset], function(err, row) {
+      var params = {$pageSize:pageSize, $offset:offset};
+//console.log(sql, params);
+      db.each(sql, params, function(err, row) {
+//        console.log(err,row);
         data.push(extend({id:row.id}, OmitPassword(JSON.parse(row.data))));
       },
       function() {
