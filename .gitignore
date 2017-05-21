@@ -1,5 +1,6 @@
 **/node_modules
 express/public/
-**/**.sqlite
+**/*.sqlite
 yeoman/app/scripts/appconfig.js
 public_html
+uploads
