@@ -2,19 +2,12 @@ var express = require('express');
 var router = express.Router();
 var clone = require('clone');
 var extend = require('util')._extend;
-
-function OmitPassword(entry) {
-  try {
-    delete(entry.password);
-  }
-  catch(e) {}
-  return entry;
-}
+var md5 = require('crypto-js/md5');
+var sha1 = require('crypto-js/sha1');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     var db = req.app.get('db');
-    var data = [];
     var count = 0;
     var pageSize = 5;
     var offset = 0;
@@ -33,24 +26,32 @@ SELECT
   FROM
     users
 `;
-      db.each(sql, [], function(err, row) {
+      db.get(sql, {}, function(err, row) {
+        if(err)
+          return;
         res.setHeader("Angular-Count", row.count);
       });
       sql=`
 SELECT
-  *
-  FROM users
+    id,
+    firstname,
+    lastname,
+    email
+  FROM
+    users
   ORDER BY ${sortBy} ${direction}
   LIMIT $pageSize OFFSET $offset
 `;
       var params = {$pageSize:pageSize, $offset:offset};
 //console.log(sql, params);
-      db.each(sql, params, function(err, row) {
-//        console.log(err,row);
-        data.push(extend({id:row.id}, OmitPassword(JSON.parse(row.data))));
-      },
-      function() {
-        res.json(data);
+      db.all(sql, params, function(err, rows) {
+        if(err) {
+          return;
+        }
+        if(!rows) {
+          return;
+        }
+        res.json(rows);
       });
     });
 });
@@ -58,12 +59,47 @@ SELECT
 router.post('/', function(req, res, next) {
   var db = req.app.get('db');
   var data = [];
+  var params = {
+    $firstname:"",
+    $lastname:"",
+    $password:"",
+    $salt:"",
+    $email:""
+  };
+  for(var i in req.body) {
+    switch(i) {
+      case "firstname":
+      case "lastname":
+      case "email":
+        params["$"+i]=req.body[i];
+        break;
+      case "password":
+        params.$salt=md5(Math.random()).toString();
+        params.$password=sha1(params.$salt+sha1(req.body.password).toString()).toString();
+        break;
+    }
+  }
   db.serialize(function() {
     var sql=`
-INSERT INTO users(data) VALUES (?)
+INSERT INTO
+  users (
+    firstname,
+    lastname,
+    password,
+    salt,
+    email
+  ) VALUES (
+    $firstname,
+    $lastname,
+    $password,
+    $salt,
+    $email
+  )
 `;
-    db.run(sql, [JSON.stringify(req.body)], function() {
-      res.json(req.body);
+    db.run(sql, params, function(err) {
+      if(err) {
+      }
+      res.json({});
     });
   });
 });
@@ -71,26 +107,68 @@ INSERT INTO users(data) VALUES (?)
 router.get('/:id', function(req, res, next) {
   var db = req.app.get('db');
   var sql=`
-SELECT * FROM users WHERE id=?
+SELECT
+    id,
+    firstname,
+    lastname,
+    email,
+  FROM
+    users
+  WHERE
+    id=$id
 `;
-  db.each(sql, [req.params.id], function(err, row) {
-    res.json(extend({id:row.id}, JSON.parse(row.data)));
+  db.get(sql, {$id:req.params.id}, function(err, row) {
+    if(err) {
+      res.json({});
+      return;
+    }
+    res.json(row);
   });
 });
 
 router.post('/:id', function(req, res, next) {
   var db = req.app.get('db');
-  var sql=`
-UPDATE users SET data=? WHERE id=?
-`;
-  try {
-    db.run(sql, [JSON.stringify(req.body), req.params.id], function() {
-      res.json(req.body);
-    });
-  }
-  catch(e) {
-    console.log(e);
+  var params = {
+    $id:req.params.id,
+    $firstname:"",
+    $lastname:"",
+    $email:""
   };
+  var passwordFields="";
+  for(var i in req.body) {
+    switch(i) {
+      case "firstname":
+      case "lastname":
+      case "email":
+        params["$"+i]=req.body[i];
+        break;
+      case "password":
+        if(req.body.password.length==0)
+          continue;
+        params.$salt=md5(Math.random()).toString();
+        params.$password=sha1(params.$salt+sha1(req.body.password).toString()).toString();
+        passwordFields=`
+  password=$password,
+  salt=$salt,
+`;
+        break;
+    }
+  }
+  var sql=`
+UPDATE
+  users
+  SET
+    firstname=$firstname,
+    lastname=$lastname,
+    ${passwordFields}
+    email=$email
+  WHERE id=$id
+`;
+  db.run(sql, params, function(err) {
+    if(err) {
+    }
+    res.json({});
+  });
 });
 
 router.delete('/:id', function(req, res, next) {
@@ -99,7 +177,9 @@ router.delete('/:id', function(req, res, next) {
 DELETE FROM users WHERE id=?
 `;
   try {
-    db.run(sql, [req.params.id], function() {
+    db.run(sql, [req.params.id], function(err) {
+      if(err) {
+      }
       res.json({});
     });
   }
