@@ -15,12 +15,12 @@ router.get('/', function(req, res, next) {
       pageSize:5,
       offset:0,
       sortBy:"id",
-      ascending:true
+      ascending:"true"
     };
     req.query = extend(defaults, req.query);
     var filterWC="";
     var sortBy=req.query.sortBy;
-    var direction=req.query.ascending?"ASC":"DESC";
+    var direction=req.query.ascending=="true"?"ASC":"DESC";
     var params={
       $filter:req.query.filter,
       $pageSize:parseInt(req.query.pageSize),
