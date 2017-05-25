@@ -9,11 +9,34 @@ var sha1 = require('crypto-js/sha1');
 router.get('/', function(req, res, next) {
     var db = req.app.get('db');
     var count = 0;
-    var pageSize = 5;
-    var offset = 0;
-    var sortBy = typeof(req.query.sortBy)=="undefined"?"id":req.query.sortBy;
-    var ascending = typeof(req.query.ascending)==="undefined"?true:req.query.ascending=="true";
-    var direction = ascending?"ASC":"DESC";
+
+    var defaults = {
+      filter:null,
+      pageSize:5,
+      offset:0,
+      sortBy:"id",
+      ascending:true
+    };
+    req.query = extend(defaults, req.query);
+    var filterWC="";
+    var sortBy=req.query.sortBy;
+    var direction=req.query.ascending?"ASC":"DESC";
+    var params={
+      $filter:req.query.filter,
+      $pageSize:parseInt(req.query.pageSize),
+      $offset:parseInt(req.query.offset)
+    };
+
+    if(req.query.filter!=null) {
+      if(req.query.filter.indexOf('%')==-1)
+        req.query.filter='%'+req.query.filter+'%';
+      params.$filter=req.query.filter;
+      filterWC = `AND (
+        firstname like $filter
+        OR lastname like $filter
+      )`;
+    }
+
     try {
       pageSize=req.query.pageSize;
       offset=req.query.offset;
@@ -39,16 +62,20 @@ SELECT
     email
   FROM
     users
+  WHERE 1=1
+  ${filterWC}
   ORDER BY ${sortBy} ${direction}
   LIMIT $pageSize OFFSET $offset
 `;
-      var params = {$pageSize:pageSize, $offset:offset};
 //console.log(sql, params);
       db.all(sql, params, function(err, rows) {
         if(err) {
+console.log(err);
+          res.json([]);
           return;
         }
         if(!rows) {
+          res.json([]);
           return;
         }
         res.json(rows);

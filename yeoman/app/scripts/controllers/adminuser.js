@@ -13,6 +13,14 @@ angular.module('yeomanApp')
     $scope.header = [];
     $scope.control = {};
     var _entry = null;
+    $scope.control.filter = {
+      value:"",
+      currentValue:""
+    };
+    $scope.control.filter.Apply = function() {
+      $scope.control.filter.currentValue=$scope.control.filter.value;
+      $scope.ShowList();
+    };
     $scope.control.pagination = {
       pageSize:5,
       currentPage:1,
@@ -57,11 +65,13 @@ angular.module('yeomanApp')
       return data;
     };
     $scope.ShowList = function() {
+      $scope.control.filter.value=$scope.control.filter.currentValue;
       var params = {
         pageSize:$scope.control.pagination.pageSize,
         offset:($scope.control.pagination.currentPage-1)*$scope.control.pagination.pageSize,
         sortBy:$scope.control.sort.column,
-        ascending:$scope.control.sort.ascending
+        ascending:$scope.control.sort.ascending,
+        filter:$scope.control.filter.value
       };
       $scope.users = UsersAPI.query(params, ShowListCB);
       $scope.control.show="list";

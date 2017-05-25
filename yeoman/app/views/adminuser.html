@@ -10,6 +10,14 @@
 </ul>
 
 <div class="crud-list" ng-show="control.show=='list'">
+
+  <div class="input-group">
+    <input type="text" class="form-control" ng-model="control.filter.value" placeholder="Search for...">
+    <span class="input-group-btn">
+      <button class="btn btn-default" type="button" ng-click="control.filter.Apply()">Filter</button>
+    </span>
+  </div><!-- /input-group -->
+
   <table class="table">
     <thead>
       <tr>
