@@ -7,19 +7,34 @@
   <li>REST using Express</li>
   <li>Serving Yeoman from Express static folder</li>
   <li>Express REST stores data into Sqlite</li>
+  <li>Column sort</li>
+  <li>Search filter</li>
 </ul>
 
 <div class="crud-list" ng-show="control.show=='list'">
 
-  <div class="input-group">
-    <input type="text" class="form-control" ng-model="control.filter.value" placeholder="Search for...">
-    <span class="input-group-btn">
-      <button class="btn btn-default" type="button" ng-click="control.filter.Apply()">Filter</button>
-    </span>
-  </div><!-- /input-group -->
-
   <table class="table">
     <thead>
+      <tr>
+        <td colspan="{{header.length+2}}" class="text-right">
+
+          <div class="row">
+              <div class="col-sm-6">
+              </div>
+              <div class="col-sm-6">
+
+          <div class="input-group">
+            <input type="text" class="form-control" ng-model="control.filter.value" placeholder="Search for...">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button" ng-click="control.filter.Apply()">Filter</button>
+            </span>
+          </div><!-- /input-group -->
+
+              </div>
+          </div>
+
+        </td>
+      </tr>
       <tr>
         <th ng-repeat="key in header" ng-click="SortBy(key)">
           {{key}}
@@ -33,22 +48,35 @@
       <tr ng-repeat="user in users">
         <td ng-repeat="key in header">{{user[key]}}</td>
         <td class="text-right">
-          <a class="btn btn-primary" role="button" ng-click="ShowEdit(user)">Edit</a>
-          <a class="btn btn-primary" role="button" ng-click="Delete(user)">Delete</a>
+<!-- Split button -->
+<div class="btn-group">
+  <button type="button" class="btn btn-default" ng-click="ShowEdit(user)">Edit</button>
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span class="caret"></span>
+    <span class="sr-only">Toggle Dropdown</span>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-right">
+    <li><a href="#" ng-click="Delete(user);$event.preventDefault();">Delete</a></li>
+  </ul>
+</div>
         </td>
       </tr>
     </tbody>
     <tfoot>
       <tr>
         <th colspan="{{header.length+2}}" class="text-right">
-          <a class="btn btn-primary" role="button" ng-click="ShowAdd()">Add</a>
+          <div class="row">
+            <div class="col-xs-12 text-right">
+              <a class="btn btn-default" role="button" ng-click="ShowAdd()">Add</a>
+            </div>
+          </div>
+          <div class="row text-center">
+            <div class="col-xs-12 text-center">
+              <ul ng-hide="control.pagination.count<=control.pagination.pageSize" uib-pagination boundary-links="true" ng-change="ShowList()" total-items="control.pagination.count" ng-model="control.pagination.currentPage" items-per-page="control.pagination.pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
+              </ul>
+            </div>
+          </div>
         </th>
-      </tr>
-      <tr>
-        <td colspan="{{header.length+2}}" class="text-center">
-            <ul ng-hide="control.pagination.count<=control.pagination.pageSize" uib-pagination boundary-links="true" ng-change="ShowList()" total-items="control.pagination.count" ng-model="control.pagination.currentPage" items-per-page="control.pagination.pageSize" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;">
-            </ul>
-        </td>
       </tr>
     </tfoot>
   </table>
