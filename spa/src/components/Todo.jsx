@@ -19,8 +19,4 @@ Todo.propTypes = {
   text: PropTypes.string.isRequired
 }
 
-Todo.contextTypes = {
-  framework7AppContext: PropTypes.object
-}
-
 export default Todo

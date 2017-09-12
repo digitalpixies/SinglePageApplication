@@ -22,7 +22,4 @@ TodoList.propTypes = {
   onTodoClick: PropTypes.func.isRequired
 }
 
-TodoList.contextTypes = {
-  framework7AppContext: PropTypes.object
-}
 export default TodoList

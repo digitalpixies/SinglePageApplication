@@ -13,8 +13,4 @@ const App = () => (
   </Framework7App>
 )
 
-App.contextTypes = {
-  framework7AppContext: PropTypes.object
-}
-
 export default App
